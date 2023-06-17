@@ -9,7 +9,7 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : class
 {
     protected readonly AppDbContext Context;
     protected readonly ILogger<T> Logger;
-    protected DbSet<T> Entities;
+    protected readonly DbSet<T> Entities;
 
     protected RepositoryBase(AppDbContext context, ILogger<T> logger)
     {
@@ -29,20 +29,15 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : class
         return await Entities.FindAsync(id);
     }
 
-    public virtual async Task<bool> Add(T entity)
+    public virtual async Task Add(T entity)
     {
         await Entities.AddAsync(entity);
-        return true;
     }
 
-    public virtual Task<bool> Delete(Guid id)
+    public virtual async Task Delete(Guid id)
     {
-        throw new NotImplementedException();
-    }
-
-    public virtual Task<bool> Update(T entity)
-    {
-        throw new NotImplementedException();
+        var entity = await GetById(id);
+        if (entity != null) Entities.Remove(entity);
     }
 
     public virtual async Task<IEnumerable<T>> Find(Expression<Func<T, bool>> predicate)

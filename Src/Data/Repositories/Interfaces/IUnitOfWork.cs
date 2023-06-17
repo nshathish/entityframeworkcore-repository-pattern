@@ -1,8 +1,9 @@
 ﻿namespace Data.Repositories.Interfaces;
 
-public interface IUnitOfWork
+public interface IUnitOfWork: IDisposable
 {
-    IEmployeeRepository EmployeeRepository { get; }
-    Task CompleteAsync();
-    void Dispose();
+    IEmployeeRepository Employees { get; }
+    
+    Task<int> CompleteAsync();
+    
 }

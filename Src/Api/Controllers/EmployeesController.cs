@@ -18,14 +18,14 @@ public class EmployeesController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetEmployees()
     {
-        var employees = await _unitOfWork.EmployeeRepository.All();
+        var employees = await _unitOfWork.Employees.All();
         return Ok(employees);
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetEmployee(Guid id)
     {
-        var employee = await _unitOfWork.EmployeeRepository.GetById(id);
+        var employee = await _unitOfWork.Employees.GetById(id);
         if (employee == null)
             return NotFound();
         return Ok(employee);
@@ -35,7 +35,7 @@ public class EmployeesController : ControllerBase
     public async Task<IActionResult> CreateEmployee([FromBody] Employee employee)
     {
         employee.Id = Guid.NewGuid();
-        await _unitOfWork.EmployeeRepository.Add(employee);
+        await _unitOfWork.Employees.Add(employee);
         await _unitOfWork.CompleteAsync();
         return CreatedAtAction(nameof(GetEmployee), new { id = employee.Id }, employee);
     }

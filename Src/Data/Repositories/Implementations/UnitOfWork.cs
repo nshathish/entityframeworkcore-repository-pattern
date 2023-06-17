@@ -8,23 +8,32 @@ public class UnitOfWork : IUnitOfWork
     private readonly AppDbContext _context;
     private readonly ILogger<IUnitOfWork> _logger;
 
-    public IEmployeeRepository EmployeeRepository { get; }
+    public IEmployeeRepository Employees { get; }
 
     public UnitOfWork(IEmployeeRepository employeeRepository, ILogger<IUnitOfWork> logger, AppDbContext context)
     {
-        EmployeeRepository = employeeRepository;
+        Employees = employeeRepository;
         _logger = logger;
         _context = context;
     }
 
 
-    public async Task CompleteAsync()
+    public async Task<int> CompleteAsync()
     {
-        await _context.SaveChangesAsync();
+        return await _context.SaveChangesAsync();
     }
 
     public void Dispose()
     {
+        Dispose(true);
         _context.Dispose();
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _context.Dispose();
+        }
     }
 }
